@@ -9,7 +9,11 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus.SportEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import com.mikes.android_advanced_arquitectures.arq.basic.event_bus.EventBus
+import com.mikes.android_advanced_arquitectures.arq.basic.event_bus.SportEvent
 import com.mikes.android_advanced_arquitectures.sport_app.ui.components.AdEventCard
 import com.mikes.android_advanced_arquitectures.sport_app.ui.components.SportEventErrorCard
 import com.mikes.android_advanced_arquitectures.sport_app.ui.components.SportEventSuccessCard
@@ -19,16 +23,39 @@ import kotlinx.coroutines.delay
 @Composable
 fun SportEventsScreen(
     modifier: Modifier = Modifier,
-    onRefresh: suspend () -> List<SportEvent> = { getResultEventsInRealtime() }
+    eventBus: EventBus, // Inyectar el EventBus
+    onRefresh: suspend () -> List<SportEvent> = { emptyList() }
 ) {
+    // Estado para mantener la lista de eventos
+    //var events by remember { mutableStateOf<List<SportEvent>>(emptyList()) } // Es una lista
+    val events = remember { mutableStateListOf<SportEvent>() }
 
-    var events: List<SportEvent> by remember { mutableStateOf( getResultEventsInRealtime()) }
-    var isRefreshing: Boolean by remember { mutableStateOf(false) }
+    var isRefreshing by remember { mutableStateOf(false) }
 
-    val pullToRefreshState = rememberPullToRefreshState()
+    //??
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val scope = rememberCoroutineScope()
+
+    // Suscribirse al EventBus cuando el composable se monta
+    LaunchedEffect(eventBus) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+            eventBus.subscribe<SportEvent> { event ->
+                events.add(0,event)
+            }
+        }
+    }
+
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            val newEvents = onRefresh() // Llamar la función de refresh
+            events.clear()
+            events.addAll(newEvents)
+            isRefreshing = false // Terminar el refresh
+        }
+    }
 
     //Qué es launched effect?
-
     //Pending Refresh Logic
     Scaffold( // Que pija es el scaffold
         topBar = {
@@ -78,33 +105,9 @@ fun SportEventsScreen(
                                 AdEventCard()
                             }
                         }
-
                     }
                 }
             }
         }
     )
-
-    // Manejar el refresh
-    LaunchedEffect(isRefreshing) {
-        if (isRefreshing) {
-            delay(1500)
-            events = onRefresh()
-            isRefreshing = false
-        }
-    }
-
 }
-
-//MOCK DATA
-private fun getResultEventsInRealtime() = listOf(
-    SportEvent.ResultSuccess(1, "Fútbol", listOf("Italia", "Perú", "Corea del Sur")),
-    SportEvent.ResultSuccess(2, "Levantamiento de Pesas", listOf("Mongolia", "Alemania", "Turquía")),
-    SportEvent.ResultError(10, "Error de red."),
-    SportEvent.ResultSuccess(3, "Gimnasia Rítmica", listOf("Rusia", "USA", "Francia")),
-    SportEvent.ResultSuccess(4, "Polo Acuático", listOf("España", "Vietnam", "USA")),
-    SportEvent.ResultSuccess(5, "Béisbol", null, true),
-    SportEvent.ResultError(20, "Error de permisos."),
-    SportEvent.ResultSuccess(6, "Rugby", listOf("Sudáfrica", "Qatar", "Rumanía")),
-    SportEvent.ResultSuccess(7, "Tenis", listOf("España", "México", "Colombia"))
-)

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus.SportEvent
+import com.mikes.android_advanced_arquitectures.arq.basic.event_bus.SportEvent
 import com.mikes.android_advanced_arquitectures.sport_app.utils.getSportImageUrl
 
 @Composable

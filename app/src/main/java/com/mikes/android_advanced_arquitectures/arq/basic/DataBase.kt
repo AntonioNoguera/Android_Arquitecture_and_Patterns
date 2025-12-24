@@ -1,7 +1,7 @@
-package com.mikes.android_advanced_arquitectures.arq.advanced.basic
+package com.mikes.android_advanced_arquitectures.arq.basic
 
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus.Result
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus.SportEvent
+import com.mikes.android_advanced_arquitectures.arq.basic.event_bus.Result
+import com.mikes.android_advanced_arquitectures.arq.basic.event_bus.SportEvent
 
 fun getEventsInRealtime() = listOf(
     Result(1, "Fútbol", listOf("Italia", "Perú", "Corea del Sur")),

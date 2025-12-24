@@ -1,9 +1,9 @@
-package com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus
+package com.mikes.android_advanced_arquitectures.arq.basic.event_bus
 
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.getAdEventsInRealtime
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.getEventsInRealtime
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.getResultEventsInRealtime
-import com.mikes.android_advanced_arquitectures.arq.advanced.basic.singleton.Singleton
+import com.mikes.android_advanced_arquitectures.arq.basic.getAdEventsInRealtime
+import com.mikes.android_advanced_arquitectures.arq.basic.getEventsInRealtime
+import com.mikes.android_advanced_arquitectures.arq.basic.getResultEventsInRealtime
+import com.mikes.android_advanced_arquitectures.arq.basic.singleton.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -1,4 +1,4 @@
-package com.mikes.android_advanced_arquitectures.arq.advanced.basic.event_bus
+package com.mikes.android_advanced_arquitectures.arq.basic.event_bus
 
 //Todo: Cual es la justificación de Sealed?
 sealed class SportEvent {
